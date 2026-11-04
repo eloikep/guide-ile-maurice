@@ -13,7 +13,8 @@
     "budget": "Economique",
     "commentaire": "Idéal à coupler avec la visite de Chamarel.",
     "lien_maps": "https://maps.app.goo.gl/F8TQBpQtWnVdydJh6",
-    "telephone": ""
+    "telephone": "",
+    "auteur": "Elo"
   },
   {
     "id": 2,
@@ -29,7 +30,8 @@
     "budget": "Economique",
     "commentaire": "Prendre à emporter et à déguster sur la plage de Mon Choisy.",
     "lien_maps": "https://maps.app.goo.gl/mmZP5cP4xLnK7LQu9",
-    "telephone": ""
+    "telephone": "",
+    "auteur": "Elo"
   },
   {
     "id": 3,
@@ -45,7 +47,8 @@
     "budget": "Normal",
     "commentaire": "Entrée par l'hôtel Hibiscus. Soirées blind-test le jeudi.",
     "lien_maps": "https://maps.app.goo.gl/V1NXDhbZ8L6TmFJe6",
-    "telephone": ""
+    "telephone": "",
+    "auteur": "Elo"
   },
   {
     "id": 4,
@@ -61,7 +64,8 @@
     "budget": "Normal",
     "commentaire": "Plus intéressant comme bar le soir que restaurant le jour.",
     "lien_maps": "https://maps.app.goo.gl/QGovDB8uw4WRBYNx7",
-    "telephone": ""
+    "telephone": "",
+    "auteur": "Elo"
   },
   {
     "id": 5,
@@ -77,7 +81,8 @@
     "budget": "Cher",
     "commentaire": "Piscine à disposition et meilleur poisson du nord.",
     "lien_maps": "",
-    "telephone": ""
+    "telephone": "",
+    "auteur": "Elo"
   },
   {
     "id": 6,
@@ -93,6 +98,7 @@
     "budget": "Cher",
     "commentaire": "Idéal après la montagne du Lion, vue imprenable et jardin agréable.",
     "lien_maps": "https://maps.app.goo.gl/YZhpgDYqpDM46ZaH9",
-    "telephone": ""
+    "telephone": "",
+    "auteur": "Elo"
   }
 ]
