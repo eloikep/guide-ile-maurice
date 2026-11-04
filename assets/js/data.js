@@ -2,23 +2,37 @@
 
 class DataManager {
   constructor() {
-    this.storageKey = 'maurice_guide_restos';
+    this.currentType = 'restos'; // 'restos' ou 'activites'
+    this.storageKeyRestos = 'maurice_guide_restos';
+    this.storageKeyActivites = 'maurice_guide_activites';
     this.items = [];
   }
 
-  // Charge les données depuis localStorage ou depuis restos.json
-  async loadData() {
-    const localData = localStorage.getItem(this.storageKey);
+  // Définir la collection active ('restos' ou 'activites')
+  setType(type) {
+    this.currentType = type;
+  }
+
+  getType() {
+    return this.currentType;
+  }
+
+  // Charge les données selon le type actif depuis localStorage ou le fichier JSON
+  async loadData(type = this.currentType) {
+    this.currentType = type;
+    const storageKey = this.currentType === 'restos' ? this.storageKeyRestos : this.storageKeyActivites;
+    const jsonPath = this.currentType === 'restos' ? './assets/data/restos.json' : './assets/data/activites.json';
+
+    const localData = localStorage.getItem(storageKey);
     if (localData) {
       this.items = JSON.parse(localData);
       return this.items;
     }
 
     try {
-      const response = await fetch('./assets/data/restos.json');
+      const response = await fetch(jsonPath);
       const data = await response.json();
       
-      // S'assurer que chaque item a un auteur (par défaut "Elo" pour la base initiale)
       this.items = data.map(item => ({
         ...item,
         auteur: item.auteur || "Elo"
@@ -27,58 +41,54 @@ class DataManager {
       this.saveToLocalStorage();
       return this.items;
     } catch (error) {
-      console.error("Erreur lors du chargement des données :", error);
+      console.error(`Erreur lors du chargement des données (${this.currentType}) :`, error);
       return [];
     }
   }
 
-  // Obtenir tous les éléments
   getItems() {
     return this.items;
   }
 
-  // Ajouter un nouveau lieu (créé par un utilisateur)
+  // Ajouter un nouvel élément
   addItem(newItem) {
     const id = this.items.length > 0 ? Math.max(...this.items.map(i => i.id)) + 1 : 1;
-    const itemToAdd = {
-      id,
-      famille: newItem.famille || "Restos / Bars",
-      categorie: newItem.categorie || "Restaurant",
-      nom: newItem.nom,
-      description: newItem.description || "",
-      note: Number(newItem.note) || 4,
-      zone: newItem.zone || "Nord",
-      ville: newItem.ville || "",
-      type: newItem.type || "Commun",
-      cadre: newItem.cadre || "Non précisé",
-      budget: newItem.budget || "Normal",
-      commentaire: newItem.commentaire || "",
-      lien_maps: newItem.lien_maps || "",
-      telephone: newItem.telephone || "",
-      auteur: newItem.auteur || "Invité"
-    };
+    
+    let itemToAdd = { id, ...newItem, auteur: newItem.auteur || "Invité" };
 
     this.items.push(itemToAdd);
     this.saveToLocalStorage();
     return itemToAdd;
   }
 
-  // Sauvegarder dans le navigateur
-  saveToLocalStorage() {
-    localStorage.setItem(this.storageKey, JSON.stringify(this.items));
+  // Mettre à jour un élément existant (par ID)
+  updateItem(id, updatedFields) {
+    const index = this.items.findIndex(item => item.id === id);
+    if (index !== -1) {
+      this.items[index] = { ...this.items[index], ...updatedFields };
+      this.saveToLocalStorage();
+      return this.items[index];
+    }
+    return null;
   }
 
-  // Exporter en JSON
+  // Sauvegarder dans localStorage
+  saveToLocalStorage() {
+    const storageKey = this.currentType === 'restos' ? this.storageKeyRestos : this.storageKeyActivites;
+    localStorage.setItem(storageKey, JSON.stringify(this.items));
+  }
+
+  // Exporter la collection courante en JSON
   exportJSON() {
+    const fileName = `${this.currentType}_maurice_updated.json`;
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.items, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "restos_maurice_updated.json");
+    downloadAnchor.setAttribute("download", fileName);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
   }
 }
 
-// Exportation de l'instance pour les autres modules
 window.dataManager = new DataManager();
