@@ -76,6 +76,22 @@ class FilterManager {
     if (!this.sourceItems) return [];
     return this.filter(this.sourceItems);
   }
+
+  // Calcule les items filtrés en ignorant le filtre de zone (utilisé pour les compteurs de la carte)
+  getItemsWithoutZoneFilter() {
+    if (!this.sourceItems) return [];
+    
+    // On sauvegarde temporairement la zone actuelle
+    const originalZone = this.currentFilters.zone;
+    this.currentFilters.zone = null; // On l'enlève pour le calcul
+    
+    const results = this.filter(this.sourceItems);
+    
+    // On remet la zone en place
+    this.currentFilters.zone = originalZone;
+    
+    return results;
+  }
 }
 
 window.FilterManager = FilterManager;

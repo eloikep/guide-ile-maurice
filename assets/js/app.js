@@ -22,15 +22,35 @@ document.addEventListener("DOMContentLoaded", async () => {
     currentCollection = type;
     dataManager.setType(type);
     
-    // MAJ de la feuille de filtre HTML
+    // MAJ de la feuille de filtre HTML (affiche les bons menus déroulants)
     toggleFilterControls(type);
     
-    // Reset filtres
-    filterManager.resetFilters();
-    const searchInput = document.getElementById("search-input");
-    if (searchInput) searchInput.value = "";
+    // 🔥 ON GÈRE LES FILTRE DE MANIÈRE INTELLIGENTE :
+    // On garde la zone active et la recherche, mais on remet à plat les sous-filtres 
+    // (type, budget, catégorie d'activité) pour éviter le blocage entre les deux jeux de données.
+    const currentZone = filterManager.currentFilters.zone;
+    const currentSearch = filterManager.currentFilters.search;
+    
+    filterManager.resetFilters(); // Remet tout à zéro
+    
+    if (currentZone) {
+      filterManager.currentFilters.zone = currentZone; // On conserve la zone
+    }
+    if (currentSearch) {
+      filterManager.currentFilters.search = currentSearch; // On conserve la recherche textuelle
+    }
 
-    // Style onglets
+    // Synchronisation visuelle des <select> de la page
+    const filterType = document.getElementById("filter-type");
+    if (filterType) filterType.value = filterManager.currentFilters.type;
+
+    const filterBudget = document.getElementById("filter-budget");
+    if (filterBudget) filterBudget.value = filterManager.currentFilters.budget;
+
+    const filterActivitesCat = document.getElementById("filter-activites-cat");
+    if (filterActivitesCat) filterActivitesCat.value = filterManager.currentFilters.categorie;
+
+    // Style des boutons d'onglets
     if (type === 'restos') {
       tabRestos.className = "px-4 py-2 text-sm font-bold rounded-xl bg-sky-500 text-white shadow-sm transition";
       tabActivites.className = "px-4 py-2 text-sm font-bold rounded-xl bg-white text-slate-600 hover:bg-slate-100 transition";
@@ -39,9 +59,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       tabRestos.className = "px-4 py-2 text-sm font-bold rounded-xl bg-white text-slate-600 hover:bg-slate-100 transition";
     }
 
+    // On recharge les données et met à jour l'UI
     items = await dataManager.loadData(type);
     filterManager.setSourceItems(items);
-    updateUI(items);
+    updateUI(filterManager.getFilteredItems());
   }
 
   // Écouteurs filtres
@@ -62,12 +83,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function onZoneSelected(zoneName) {
     filterManager.setFilter("zone", zoneName);
-    zoneMapManager.renderZones("zones-container", dataManager.getItems());
   }
 
   function updateUI(filteredItems) {
+    // 1. On affiche la liste des cartes avec tous les filtres stricts (y compris la zone sélectionnée)
     renderCards(filteredItems, currentCollection, dataManager, filterManager);
-    zoneMapManager.renderZones("zones-container", dataManager.getItems());
+    
+    // 2. Pour les compteurs de la carte des zones, on prend les items sans le filtre de zone
+    // Ainsi, les chiffres restent visibles sur toutes les régions !
+    const itemsForZoneCounts = filterManager.getItemsWithoutZoneFilter();
+    zoneMapManager.renderZones("zones-container", itemsForZoneCounts);
   }
 
   updateUI(items);

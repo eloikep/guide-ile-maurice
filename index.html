@@ -12,28 +12,67 @@
 
   <!-- En-tête -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          <span>🇲🇺</span> Guide Île Maurice
-        </h1>
-        <p class="text-xs text-slate-500">Carnet d'adresses & activités partagées</p>
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <!-- Drapeau SVG Île Maurice -->
+        <div class="w-8 h-6 rounded overflow-hidden flex flex-col shadow-sm border border-slate-200 shrink-0">
+          <div class="h-1/4 bg-[#ea2839]"></div>
+          <div class="h-1/4 bg-[#1a2061]"></div>
+          <div class="h-1/4 bg-[#ffd100]"></div>
+          <div class="h-1/4 bg-[#00a04d]"></div>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 leading-tight">
+            Guide Île Maurice
+          </h1>
+          <p class="text-xs text-slate-500">Carnet d'adresses & activités partagées</p>
+        </div>
       </div>
 
-      <!-- Bascule Restos / Activités -->
-      <div class="flex bg-slate-100 p-1 rounded-2xl border border-slate-200">
-        <button id="tab-restos" class="px-4 py-2 text-sm font-bold rounded-xl bg-sky-500 text-white shadow-sm transition">
-          🍽️ Restos & Bars
-        </button>
-        <button id="tab-activites" class="px-4 py-2 text-sm font-bold rounded-xl bg-white text-slate-600 hover:bg-slate-100 transition">
-          🏄 Activités & Sorties
-        </button>
+      <!-- Bascule Restos / Activités et Filtres rapides -->
+      <div class="flex flex-wrap items-center gap-3 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+        <!-- Onglets -->
+        <div class="flex gap-1">
+          <button id="tab-restos" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-sky-500 text-white shadow-sm transition">
+            🍽️ Restos
+          </button>
+          <button id="tab-activites" class="px-3 py-1.5 text-xs font-bold rounded-xl bg-white text-slate-600 hover:bg-slate-100 transition">
+            🏄 Activités
+          </button>
+        </div>
+
+        <div class="h-5 w-px bg-slate-300"></div>
+
+        <!-- Filtres dynamiques -->
+        <div id="restos-filters" class="flex items-center gap-2">
+          <select id="filter-type" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none">
+            <option value="Tous">Tous types</option>
+            <option value="Boui-Boui">Boui-Boui</option>
+            <option value="Commun">Commun</option>
+            <option value="Classe">Classe</option>
+          </select>
+          <select id="filter-budget" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none">
+            <option value="Tous">Tous budgets</option>
+            <option value="Economique">Économique</option>
+            <option value="Normal">Normal</option>
+            <option value="Cher">Cher</option>
+          </select>
+        </div>
+
+        <div id="activites-filters" class="flex items-center gap-2 hidden">
+          <select id="filter-activites-cat" class="px-2.5 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none">
+            <option value="Tous">Toutes activités</option>
+            <option value="Randonnée">Randonnée</option>
+            <option value="Visite">Visite</option>
+            <option value="Sortie">Sortie</option>
+          </select>
+        </div>
       </div>
-      
+
       <!-- Recherche -->
-      <div class="w-full md:w-72">
-        <input type="text" id="search-input" placeholder="🔍 Rechercher un nom, ville..." 
-          class="w-full px-4 py-2 bg-slate-100 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition">
+      <div class="w-full md:w-64">
+        <input type="text" id="search-input" placeholder="🔍 Rechercher nom, ville..." 
+          class="w-full px-3.5 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition">
       </div>
     </div>
   </header>
@@ -50,47 +89,7 @@
         <div id="zones-container" class="space-y-2.5"></div>
       </div>
 
-      <!-- Filtres -->
-      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">⚙️ Filtres</h2>
-        
-        <!-- Filtres spécifiques Restos -->
-        <div id="restos-filters" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Ambiance</label>
-            <select id="filter-type" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none">
-              <option value="Tous">Tous les types</option>
-              <option value="Boui-Boui">Boui-Boui</option>
-              <option value="Commun">Commun</option>
-              <option value="Classe">Classe</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Budget</label>
-            <select id="filter-budget" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none">
-              <option value="Tous">Tous les budgets</option>
-              <option value="Economique">Économique</option>
-              <option value="Normal">Normal</option>
-              <option value="Cher">Cher</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Filtres spécifiques Activités -->
-        <div id="activites-filters" class="space-y-4 hidden">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Type d'activité</label>
-            <select id="filter-activites-cat" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none">
-              <option value="Tous">Toutes les activités</option>
-              <option value="Randonnée">Randonnée</option>
-              <option value="Visite">Visite</option>
-              <option value="Sortie">Sortie</option>
-            </select>
-          </div>
-        </div>
-
-      </div>
-
+      
       <!-- Actions de données -->
       <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
         <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">💾 Données</h2>
